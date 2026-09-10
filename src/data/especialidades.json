@@ -1,0 +1,22 @@
+[
+  { "especialidadId": "e1a9b1c1-4d32-4b3a-9c12-3f4a5b6c7d8e", "nombreEspecialidad": "Cardiología", "activa": true },
+  { "especialidadId": "f2b8c2d2-5e43-5c4b-0d23-4a5b6c7d8e9f", "nombreEspecialidad": "Pediatría", "activa": true },
+  { "especialidadId": "a3c7d3e3-6f54-6d5c-1e34-5b6c7d8e9f0a", "nombreEspecialidad": "Neurología", "activa": true },
+  { "especialidadId": "b4d6e4f4-7a65-7e6d-2f45-6c7d8e9f0a1b", "nombreEspecialidad": "Dermatología", "activa": true },
+  { "especialidadId": "c5e5f5a5-8b76-8f7e-3a56-7d8e9f0a1b2c", "nombreEspecialidad": "Traumatología", "activa": true },
+  { "especialidadId": "d6f4a6b6-9c87-9a8f-4b67-8e9f0a1b2c3d", "nombreEspecialidad": "Ginecología", "activa": true },
+  { "especialidadId": "e7a3b7c7-0d98-0b9a-5c78-9f0a1b2c3d4e", "nombreEspecialidad": "Oftalmología", "activa": true },
+  { "especialidadId": "f8b2c8d8-1e09-1c0b-6d89-0a1b2c3d4e5f", "nombreEspecialidad": "Psiquiatría", "activa": true },
+  { "especialidadId": "a9c1d9e9-2f10-2d1c-7e90-1b2c3d4e5f6a", "nombreEspecialidad": "Urología", "activa": true },
+  { "especialidadId": "b0d0e0f0-3a21-3e2d-8f01-2c3d4e5f6a7b", "nombreEspecialidad": "Endocrinología", "activa": true },
+  { "especialidadId": "c1e9f1a1-4b32-4f3e-9a12-3d4e5f6a7b8c", "nombreEspecialidad": "Gastroenterología", "activa": true },
+  { "especialidadId": "d2f8a2b2-5c43-5a4f-0b23-4e5f6a7b8c9d", "nombreEspecialidad": "Neumonología", "activa": true },
+  { "especialidadId": "e3a7b3c3-6d54-6b5a-1c34-5f6a7b8c9d0e", "nombreEspecialidad": "Reumatología", "activa": true },
+  { "especialidadId": "f4b6c4d4-7e65-7c6b-2d45-6a7b8c9d0e1f", "nombreEspecialidad": "Otorrinolaringología", "activa": true },
+  { "especialidadId": "a5c5d5e5-8f76-8d7c-3e56-7b8c9d0e1f2a", "nombreEspecialidad": "Hematología", "activa": true },
+  { "especialidadId": "b6d4e6f6-9a87-9e8d-4f67-8c9d0e1f2a3b", "nombreEspecialidad": "Oncología", "activa": true },
+  { "especialidadId": "c7e3f7a7-0b98-0f9e-5a78-9d0e1f2a3b4c", "nombreEspecialidad": "Nefrología", "activa": true },
+  { "especialidadId": "d8f2a8b8-1c09-1a0f-6b89-0e1f2a3b4c5d", "nombreEspecialidad": "Infectología", "activa": true },
+  { "especialidadId": "e9a1b9c9-2d10-2b1a-7c90-1f2a3b4c5d6e", "nombreEspecialidad": "Inmunología", "activa": true },
+  { "especialidadId": "f0b0c0d0-3e21-3c2b-8d01-2a3b4c5d6e7f", "nombreEspecialidad": "Medicina General", "activa": true }
+]
