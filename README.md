@@ -57,7 +57,7 @@ turnos-medicos/
 │   │   ├── especialidades.json
 │   │   └── profesionales.json
 │   ├── controllers/
-│   │   ├── general.controller.ts          Bienvenida, rutas inexistentes (404) y JSON inválido
+│   │   ├── general.controller.ts          helloWorld (bienvenida) y notFound (rutas inexistentes)
 │   │   ├── especialidades.controller.ts   Lógica de la entidad Especialidades
 │   │   └── profesionales.controller.ts    Lógica de la entidad Profesionales
 │   ├── routes/
@@ -73,28 +73,28 @@ turnos-medicos/
 
 ### Arquitectura
 
-Las rutas solo asocian cada endpoint con la función del controller de su entidad; la lógica vive en `src/controllers/`. Todas las funciones exportadas por los controllers son `async` y siguen el mismo patrón:
+Las rutas solo asocian cada endpoint con el método del controller de su entidad (`GeneralController`, `EspecialidadesController`, `ProfesionalesController`); la lógica vive en `src/controllers/`. Cada controller es una clase con métodos estáticos asincrónicos que siguen el mismo patrón:
 
-- Una variable local `status` que se ajusta según el camino del flujo (éxito o error).
+- Una variable de estado `statusCode` propia del controller, que se ajusta según el camino del flujo (éxito o error).
 - Validaciones previas a buscar, filtrar, modificar o eliminar datos. Si una no se cumple, se asigna el código correspondiente y se lanza `throw new Error(...)`.
 - La lógica envuelta en `try-catch`: el `catch` responde con el código ya configurado, o `500` si el error fue inesperado.
 - `return` explícito en cada respuesta, para evitar el error *headers already sent*.
 
 ```ts
-export const getProfesionalById = async (req: Request, res: Response) => {
-    let status = 200;
+static getProfesionalById = async (req: Request, res: Response) => {
+    this.statusCode = 200;
     try {
         const { id } = req.params;
 
         if (typeof id !== 'string' || !UUID_REGEX.test(id)) {
-            status = 400;
+            this.statusCode = 400;
             throw new Error('El id del profesional debe ser un UUID válido');
         }
         // ...
-        return res.status(status).json({ success: true, data: profesional });
+        return res.status(this.statusCode).json({ success: true, data: profesional });
     } catch (error: any) {
-        if (status === 200) status = 500;
-        return res.status(status).json({ success: false, message: error.message });
+        if (this.statusCode < 400) this.statusCode = 500;
+        return res.status(this.statusCode).json({ success: false, message: error.message });
     }
 };
 ```
@@ -115,7 +115,7 @@ Base: `http://localhost:3000`
 | Método | Ruta | Descripción | Éxito | Errores |
 |---|---|---|---|---|
 | GET | `/` | Mensaje de bienvenida | 200 | 500 |
-| * | Cualquier ruta o método no contemplado | Middleware `notFoundHandler` | — | 404 |
+| * | Cualquier ruta o método no contemplado | Middleware `GeneralController.notFound` | — | 404 |
 
 ### Especialidades
 
@@ -191,27 +191,18 @@ Las respuestas `204` no llevan cuerpo.
 | `200` | Consulta o modificación exitosa |
 | `201` | Alta exitosa |
 | `204` | Borrado lógico exitoso (sin cuerpo) |
-| `400` | Id sin formato UUID, cuerpo ausente o JSON inválido, campos faltantes o de tipo inválido, especialidad inexistente o duplicada |
+| `400` | Id sin formato UUID, cuerpo ausente, campos faltantes o de tipo inválido, especialidad inexistente o duplicada |
 | `404` | Recurso inexistente o ruta no contemplada |
 | `500` | Error inesperado del servidor |
 
 ### Rutas inexistentes
 
-Respuesta del middleware `notFoundHandler` del controller general (`404`):
+Respuesta del middleware `GeneralController.notFound` (`404`):
 
 ```json
 {
   "success": false,
   "message": "La ruta /ruta-inventada no existe en este servidor"
-}
-```
-
-Si el cuerpo enviado no es un JSON válido, el middleware `errorHandler` responde `400`:
-
-```json
-{
-  "success": false,
-  "message": "El cuerpo de la petición no es un JSON válido"
 }
 ```
 
