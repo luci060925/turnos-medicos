@@ -2,44 +2,77 @@ import type { Request, Response } from 'express';
 import { profesionales, especialidades } from '../resources.ts';
 import type { Profesional } from '../resources.ts';
 
+// Formato UUID (8-4-4-4-12 caracteres hexadecimales)
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 // GET /profesionales — solo activos
-export const getProfesionales = (req: Request, res: Response) => {
+export const getProfesionales = async (req: Request, res: Response) => {
+    let status = 200;
     try {
         const activos = profesionales.filter((p: Profesional) => p.activo);
-        res.status(200).json({ success: true, data: activos });
-    } catch (error) {
-        res.status(500).json({ success: false, message: 'Error interno del servidor' });
+        return res.status(status).json({ success: true, data: activos });
+    } catch (error: any) {
+        if (status === 200) status = 500;
+        return res.status(status).json({
+            success: false,
+            message: error instanceof Error ? error.message : 'Error interno del servidor'
+        });
     }
 };
 
 // GET /profesionales/:id
-export const getProfesionalById = (req: Request, res: Response) => {
+export const getProfesionalById = async (req: Request, res: Response) => {
+    let status = 200;
     try {
         const { id } = req.params;
+
+        if (typeof id !== 'string' || !UUID_REGEX.test(id)) {
+            status = 400;
+            throw new Error('El id del profesional debe ser un UUID válido');
+        }
+
         const profesional = profesionales.find((p: Profesional) => p.medicoId === id);
 
         if (!profesional) {
-            return res.status(404).json({ success: false, message: 'No existe un profesional con ese id' });
+            status = 404;
+            throw new Error('No existe un profesional con ese id');
         }
 
-        res.status(200).json({ success: true, data: profesional });
-    } catch (error) {
-        res.status(500).json({ success: false, message: 'Error interno del servidor' });
+        return res.status(status).json({ success: true, data: profesional });
+    } catch (error: any) {
+        if (status === 200) status = 500;
+        return res.status(status).json({
+            success: false,
+            message: error instanceof Error ? error.message : 'Error interno del servidor'
+        });
     }
 };
 
 // POST /profesionales
-export const createProfesional = (req: Request, res: Response) => {
+export const createProfesional = async (req: Request, res: Response) => {
+    let status = 201;
     try {
+        if (!req.body || typeof req.body !== 'object' || Array.isArray(req.body)) {
+            status = 400;
+            throw new Error('El cuerpo de la petición debe ser un objeto JSON');
+        }
+
         const { nombre, especialidad, activo } = req.body;
 
-        if (!nombre || typeof nombre !== 'string') {
-            return res.status(400).json({ success: false, message: 'El campo nombre es obligatorio' });
+        if (!nombre || typeof nombre !== 'string' || !nombre.trim()) {
+            status = 400;
+            throw new Error('El campo nombre es obligatorio');
         }
 
         const especialidadExiste = especialidades.some(e => e.nombreEspecialidad === especialidad);
         if (!especialidadExiste) {
-            return res.status(400).json({ success: false, message: 'La especialidad indicada no existe en el listado' });
+            status = 400;
+            throw new Error('La especialidad indicada no existe en el listado');
+        }
+
+        if (activo !== undefined && typeof activo !== 'boolean') {
+            status = 400;
+            throw new Error('El campo activo debe ser true o false');
         }
 
         const nuevo: Profesional = {
@@ -54,29 +87,62 @@ export const createProfesional = (req: Request, res: Response) => {
         console.clear();
         console.table(nuevo);
 
-        res.status(201).json({ success: true, data: nuevo });
-    } catch (error) {
-        res.status(500).json({ success: false, message: 'Error interno del servidor' });
+        return res.status(status).json({ success: true, data: nuevo });
+    } catch (error: any) {
+        if (status === 201) status = 500;
+        return res.status(status).json({
+            success: false,
+            message: error instanceof Error ? error.message : 'Error interno del servidor'
+        });
     }
 };
 
-// PUT /profesionales/:id
-export const updateProfesional = (req: Request, res: Response) => {
+// PUT /profesionales/:id — modificación parcial
+export const updateProfesional = async (req: Request, res: Response) => {
+    let status = 200;
     try {
         const { id } = req.params;
+
+        if (typeof id !== 'string' || !UUID_REGEX.test(id)) {
+            status = 400;
+            throw new Error('El id del profesional debe ser un UUID válido');
+        }
+
         const index = profesionales.findIndex((p: Profesional) => p.medicoId === id);
 
         if (index === -1) {
-            return res.status(404).json({ success: false, message: 'Profesional no encontrado' });
+            status = 404;
+            throw new Error('Profesional no encontrado');
+        }
+
+        if (!req.body || typeof req.body !== 'object' || Array.isArray(req.body)) {
+            status = 400;
+            throw new Error('El cuerpo de la petición debe ser un objeto JSON');
         }
 
         const { nombre, especialidad, activo } = req.body;
 
-        if (especialidad) {
+        if (nombre === undefined && especialidad === undefined && activo === undefined) {
+            status = 400;
+            throw new Error('Debe enviar al menos un campo a modificar: nombre, especialidad o activo');
+        }
+
+        if (nombre !== undefined && (typeof nombre !== 'string' || !nombre.trim())) {
+            status = 400;
+            throw new Error('El campo nombre no puede estar vacío');
+        }
+
+        if (especialidad !== undefined) {
             const especialidadExiste = especialidades.some(e => e.nombreEspecialidad === especialidad);
             if (!especialidadExiste) {
-                return res.status(400).json({ success: false, message: 'La especialidad indicada no existe' });
+                status = 400;
+                throw new Error('La especialidad indicada no existe');
             }
+        }
+
+        if (activo !== undefined && typeof activo !== 'boolean') {
+            status = 400;
+            throw new Error('El campo activo debe ser true o false');
         }
 
         profesionales[index] = {
@@ -89,20 +155,32 @@ export const updateProfesional = (req: Request, res: Response) => {
         console.clear();
         console.table(profesionales[index]);
 
-        res.status(200).json({ success: true, data: profesionales[index] });
-    } catch (error) {
-        res.status(500).json({ success: false, message: 'Error interno del servidor' });
+        return res.status(status).json({ success: true, data: profesionales[index] });
+    } catch (error: any) {
+        if (status === 200) status = 500;
+        return res.status(status).json({
+            success: false,
+            message: error instanceof Error ? error.message : 'Error interno del servidor'
+        });
     }
 };
 
 // DELETE /profesionales/:id — borrado lógico
-export const deleteProfesional = (req: Request, res: Response) => {
+export const deleteProfesional = async (req: Request, res: Response) => {
+    let status = 200;
     try {
         const { id } = req.params;
+
+        if (typeof id !== 'string' || !UUID_REGEX.test(id)) {
+            status = 400;
+            throw new Error('El id del profesional debe ser un UUID válido');
+        }
+
         const profesional = profesionales.find((p: Profesional) => p.medicoId === id);
 
         if (!profesional) {
-            return res.status(404).json({ success: false, message: 'No existe un profesional con ese id' });
+            status = 404;
+            throw new Error('No existe un profesional con ese id');
         }
 
         profesional.activo = false;
@@ -110,8 +188,13 @@ export const deleteProfesional = (req: Request, res: Response) => {
         console.clear();
         console.table(profesional);
 
-        res.status(204).send();
-    } catch (error) {
-        res.status(500).json({ success: false, message: 'Error interno del servidor' });
+        status = 204;
+        return res.status(status).send();
+    } catch (error: any) {
+        if (status === 200 || status === 204) status = 500;
+        return res.status(status).json({
+            success: false,
+            message: error instanceof Error ? error.message : 'Error interno del servidor'
+        });
     }
 };

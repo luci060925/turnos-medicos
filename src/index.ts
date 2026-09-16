@@ -1,29 +1,24 @@
 import express from 'express';
-import type { Request, Response } from 'express';
 import especialidadesRoutes from './routes/especialidades.routes.ts';
 import profesionalesRoutes from './routes/profesionales.routes.ts';
+import { getWelcome, notFoundHandler, errorHandler } from './controllers/general.controller.ts';
 
 const app = express();
 const PORT = 3000;
 
 app.use(express.json());
 
-app.get('/', (req: Request, res: Response) => {
-    res.status(200).json({ success: true, message: 'Bienvenidos al servidor web de MedTurnos' });
-});
+// Endpoint de bienvenida delegando al controller general
+app.get('/', getWelcome);
 
 app.use('/especialidades', especialidadesRoutes);
 app.use('/profesionales', profesionalesRoutes);
 
-// Middleware global 404
-app.use((req: Request, res: Response) => {
-    res.status(404).json({
-        success: false,
-        message: 'Endpoint no encontrado',
-        ruta: req.originalUrl,
-        metodo: req.method
-    });
-});
+// Middleware global 404 delegando al controller general
+app.use(notFoundHandler);
+
+// Middleware de errores (ej. JSON mal formado) delegando al controller general
+app.use(errorHandler);
 
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
