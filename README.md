@@ -6,13 +6,15 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
 ![Express](https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white)
 
-> Actividades 1, 2 y 3 — Integraciones Web, Módulos 1, 2 y 3. Teclab — Tecnicatura Superior en Programación.
+> Actividades 1, 2, 3 y 4 — Integraciones Web, Módulos 1, 2, 3 y 4. Teclab — Tecnicatura Superior en Programación.
 
 ## Contexto
 
 Todos los profesionales del centro atienden de **lunes a viernes**, entre las **07:00** y las **13:00**, en turnos de **30 minutos**.
 
 Los datos se cargan desde archivos JSON al iniciar el servidor y viven en arrays en memoria. Toda alta, baja o modificación persiste únicamente mientras el proceso esté corriendo: al reiniciar, los arrays vuelven al contenido de los JSON.
+
+La propuesta del próximo módulo, con el modelado de **Pacientes** y **Turnos**, el catálogo de estados y sus endpoints, está documentada en [`pacientes-turnos.md`](./pacientes-turnos.md).
 
 ## Tech Stack
 
@@ -55,7 +57,10 @@ turnos-medicos/
 ├── src/
 │   ├── data/
 │   │   ├── especialidades.json
-│   │   └── profesionales.json
+│   │   ├── profesionales.json
+│   │   ├── pacientes.json                 Mockup del próximo módulo
+│   │   ├── turnos.json                    Mockup del próximo módulo
+│   │   └── estados-turno.json             Catálogo de estados de turno
 │   ├── controllers/
 │   │   ├── general.controller.ts          helloWorld (bienvenida) y notFound (rutas inexistentes)
 │   │   ├── especialidades.controller.ts   Lógica de la entidad Especialidades
@@ -68,6 +73,7 @@ turnos-medicos/
 ├── .gitignore
 ├── package.json
 ├── tsconfig.json
+├── pacientes-turnos.md   Propuesta del módulo de Pacientes y Turnos
 └── README.md
 ```
 
@@ -102,6 +108,14 @@ static getProfesionalById = async (req: Request, res: Response) => {
 ## API REST
 
 Base: `http://localhost:3000`
+
+### Parámetros de entrada
+
+| Tipo | Uso en esta API |
+|---|---|
+| **Params de ruta** | El identificador del recurso: `/especialidades/:id`, `/profesionales/:id` |
+| **Query params** | No se usan en esta versión. Los filtros propuestos para `GET /turnos` están en [`pacientes-turnos.md`](./pacientes-turnos.md) |
+| **Body (JSON)** | Los datos de alta y modificación en `POST` y `PUT`, con `Content-Type: application/json` |
 
 ### Identificadores (UUID v4)
 

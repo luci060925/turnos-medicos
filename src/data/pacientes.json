@@ -1,0 +1,5 @@
+[
+  { "pacienteId": "79793752-95ca-4af7-a318-bc464d456e75", "nombre": "María Elena Gómez", "dni": "38450912", "fechaNacimiento": "1994-06-15", "email": "maria.gomez@example.com", "telefono": "+542974253476", "coberturaSalud": "OSDE 310", "activo": true },
+  { "pacienteId": "af84b5be-bf5b-45bd-b9f0-a21394448329", "nombre": "Juan Ignacio Pérez", "dni": "40125783", "fechaNacimiento": "1997-02-08", "email": "juan.perez@example.com", "telefono": "+542974118250", "coberturaSalud": "Swiss Medical SMG02", "activo": true },
+  { "pacienteId": "cfb727cb-6210-44ca-bf54-60bd186aa97b", "nombre": "Camila Rojas", "dni": "45908321", "fechaNacimiento": "2004-11-23", "email": "camila.rojas@example.com", "telefono": "+542975604417", "coberturaSalud": "Particular", "activo": true }
+]

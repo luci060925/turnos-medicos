@@ -1,0 +1,9 @@
+[
+  { "codigo": "registrado", "nombre": "Registrado", "descripcion": "El turno fue reservado y quedó agendado." },
+  { "codigo": "validado", "nombre": "Validado", "descripcion": "Se verificaron los datos del turno y la cobertura de salud del paciente." },
+  { "codigo": "presente", "nombre": "Presente", "descripcion": "El paciente se acreditó en el centro médico." },
+  { "codigo": "en_consulta", "nombre": "En consulta", "descripcion": "El profesional está atendiendo al paciente." },
+  { "codigo": "finalizado", "nombre": "Finalizado", "descripcion": "La atención terminó y el turno se cerró." },
+  { "codigo": "cancelado", "nombre": "Cancelado", "descripcion": "El turno se dio de baja con aviso previo y la franja horaria quedó libre." },
+  { "codigo": "ausente", "nombre": "Ausente", "descripcion": "El paciente no asistió ni avisó, por lo que la franja horaria se perdió." }
+]
